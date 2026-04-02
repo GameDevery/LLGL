@@ -33,6 +33,7 @@ RenderSystemModule::RenderSystemModule(
     freeProc_       = reinterpret_cast< PFN_RENDERSYSTEM_FREE       >(module_->LoadProcedure("LLGL_RenderSystem_Free"      ));
 }
 
+//TODO: use platform agnostic code to find all available render system modules that start with "LLGL_" prefix instead of hard coded known modules.
 std::vector<std::string> RenderSystemModule::FindModules()
 {
     /* Iterate over all known modules (preferred modules first) and return those that are available on the current platform */

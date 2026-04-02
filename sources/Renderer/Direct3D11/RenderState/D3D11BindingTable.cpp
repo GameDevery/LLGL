@@ -291,6 +291,14 @@ void D3D11BindingTable::NotifyResourceRelease(D3D11BindingLocator* locator)
  * ======= Private: =======
  */
 
+static_assert(
+    D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT >= D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT,
+    "D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT is expected to be greater than or equal to D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT"
+);
+static_assert(
+    D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT >= D3D11_1_UAV_SLOT_COUNT,
+    "D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT is expected to be greater than or equal to D3D11_1_UAV_SLOT_COUNT"
+);
 static void* const g_nullArray[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT] = {};
 
 template <typename T>

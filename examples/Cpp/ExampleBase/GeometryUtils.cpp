@@ -16,8 +16,8 @@
 
 
 /*
-* Global helper functions
-*/
+ * Global helper functions
+ */
 
 std::vector<TexturedVertex> LoadObjModel(const std::string& filename, unsigned verticesPerFace, bool keepRightHandedCoordinates)
 {
