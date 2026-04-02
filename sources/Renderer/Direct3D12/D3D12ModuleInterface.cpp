@@ -9,66 +9,7 @@
 #include "D3D12RenderSystem.h"
 
 
-namespace LLGL
-{
-
-
-namespace ModuleDirect3D12
-{
-    int GetRendererID()
-    {
-        return RendererID::Direct3D12;
-    }
-
-    const char* GetRendererName()
-    {
-        return "Direct3D 12";
-    }
-
-    RenderSystem* AllocRenderSystem(const LLGL::RenderSystemDescriptor* renderSystemDesc)
-    {
-        return new D3D12RenderSystem{ *renderSystemDesc };
-    }
-} // /namespace ModuleDirect3D12
-
-LLGL_IMPLEMENT_RENDERER_MODULE(Direct3D12, 1012);
-
-
-} // /namespace LLGL
-
-#ifndef LLGL_BUILD_STATIC_LIB
-
-extern "C"
-{
-
-LLGL_EXPORT int LLGL_RenderSystem_BuildID()
-{
-    return LLGL_BUILD_ID;
-}
-
-LLGL_EXPORT int LLGL_RenderSystem_RendererID()
-{
-    return LLGL::ModuleDirect3D12::GetRendererID();
-}
-
-LLGL_EXPORT const char* LLGL_RenderSystem_Name()
-{
-    return LLGL::ModuleDirect3D12::GetRendererName();
-}
-
-LLGL_EXPORT void* LLGL_RenderSystem_Alloc(const void* renderSystemDesc, int renderSystemDescSize)
-{
-    if (renderSystemDesc != nullptr && static_cast<std::size_t>(renderSystemDescSize) == sizeof(LLGL::RenderSystemDescriptor))
-    {
-        auto desc = static_cast<const LLGL::RenderSystemDescriptor*>(renderSystemDesc);
-        return LLGL::ModuleDirect3D12::AllocRenderSystem(desc);
-    }
-    return nullptr;
-}
-
-} // /extern "C"
-
-#endif // /LLGL_BUILD_STATIC_LIB
+LLGL_IMPLEMENT_RENDERER_MODULE(Direct3D12, "Direct3D 12", LLGL::RendererID::Direct3D12, LLGL::D3D12RenderSystem, 1012);
 
 
 

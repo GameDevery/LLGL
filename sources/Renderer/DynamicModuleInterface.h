@@ -13,7 +13,38 @@
 #include <LLGL/Export.h>
 
 
-#define LLGL_IMPLEMENT_RENDERER_MODULE(...)
+#ifndef LLGL_IMPLEMENT_RENDERER_MODULE_BASE
+#   error LLGL_IMPLEMENT_RENDERER_MODULE_BASE must be defined before including this header file.
+#endif
+
+#define LLGL_IMPLEMENT_RENDERER_MODULE(MODULE, NAME, ID, RENDERSYSTEM, PRIORITY)                        \
+    LLGL_IMPLEMENT_RENDERER_MODULE_BASE(MODULE, NAME, ID, RENDERSYSTEM);                                \
+    extern "C"                                                                                          \
+    {                                                                                                   \
+        LLGL_EXPORT int LLGL_RenderSystem_BuildID()                                                     \
+        {                                                                                               \
+            return LLGL_BUILD_ID;                                                                       \
+        }                                                                                               \
+        LLGL_EXPORT int LLGL_RenderSystem_RendererID()                                                  \
+        {                                                                                               \
+            return LLGL::Module ## MODULE::GetRendererID();                                             \
+        }                                                                                               \
+        LLGL_EXPORT const char* LLGL_RenderSystem_Name()                                                \
+        {                                                                                               \
+            return LLGL::Module ## MODULE::GetRendererName();                                           \
+        }                                                                                               \
+        LLGL_EXPORT void* LLGL_RenderSystem_Alloc(                                                      \
+            const void* renderSystemDesc, int renderSystemDescSize)                                     \
+        {                                                                                               \
+            if (renderSystemDesc != nullptr &&                                                          \
+                static_cast<std::size_t>(renderSystemDescSize) == sizeof(LLGL::RenderSystemDescriptor)) \
+            {                                                                                           \
+                auto desc = static_cast<const LLGL::RenderSystemDescriptor*>(renderSystemDesc);         \
+                return LLGL::Module ## MODULE::AllocRenderSystem(desc);                                 \
+            }                                                                                           \
+            return nullptr;                                                                             \
+        }                                                                                               \
+    } // /extern "C"
 
 
 #ifdef __cplusplus

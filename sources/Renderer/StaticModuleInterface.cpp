@@ -8,7 +8,7 @@
 #if LLGL_BUILD_STATIC_LIB
 
 
-#include "StaticModuleInterface.h"
+#include "ModuleInterface.h"
 #include <LLGL/RenderSystemFlags.h>
 #include <LLGL/Container/Strings.h>
 #include "../Core/Assertion.h"
@@ -16,17 +16,9 @@
 #include <algorithm>
 
 
-namespace LLGL
-{
-
-
-class RenderSystem;
 
 #define LLGL_DECLARE_STATIC_MODULE(NAME) \
     extern LLGL::StaticModules::RegisterStaticModuleWrapper g_StaticModule_ ## NAME
-
-#define LLGL_STATIC_MODULE_STUB(NAME) \
-    g_StaticModule_ ## NAME .Stub()
 
 #if LLGL_BUILD_RENDERER_NULL
 LLGL_DECLARE_STATIC_MODULE(Null);
@@ -60,6 +52,13 @@ LLGL_DECLARE_STATIC_MODULE(Direct3D11);
 LLGL_DECLARE_STATIC_MODULE(Direct3D12);
 #endif
 
+
+namespace LLGL
+{
+
+
+class RenderSystem;
+
 /*
 The sole purpose of this function is to force the inclusion of all those backends by the linker when building as static library.
 This, unfortunately, creats a cyclic dependency between the core library and its backends.
@@ -67,6 +66,9 @@ The alternative is to let each project that uses LLGL call a stub function of th
 */
 static void StaticModuleStubs()
 {
+    #define LLGL_STATIC_MODULE_STUB(NAME) \
+        g_StaticModule_ ## NAME .Stub()
+
     #if LLGL_BUILD_RENDERER_NULL
     LLGL_STATIC_MODULE_STUB(Null);
     #endif
@@ -98,6 +100,8 @@ static void StaticModuleStubs()
     #if LLGL_BUILD_RENDERER_DIRECT3D12
     LLGL_STATIC_MODULE_STUB(Direct3D12);
     #endif
+
+    #undef LLGL_STATIC_MODULE_STUB
 }
 
 namespace StaticModules

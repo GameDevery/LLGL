@@ -14,6 +14,10 @@
 #include <functional>
 
 
+#ifndef LLGL_IMPLEMENT_RENDERER_MODULE_BASE
+#   error LLGL_IMPLEMENT_RENDERER_MODULE_BASE must be defined before including this header file.
+#endif
+
 /*
 Helper macro to register a static renderer module. The module needs to implement the following functions:
 namespace Module<NAME> {
@@ -22,18 +26,20 @@ namespace Module<NAME> {
   LLGL::RenderSystem* AllocRenderSystem(const LLGL::RenderSystemDescriptor*);
 }
 */
-#define LLGL_IMPLEMENT_RENDERER_MODULE(NAME, PRIORITY)                          \
-    LLGL::StaticModules::RegisterStaticModuleWrapper g_StaticModule_ ## NAME    \
-    {                                                                           \
-        LLGL::StaticModules::StaticModuleRecord                                 \
-        {                                                                       \
-            #NAME,                                                              \
-            Module ## NAME :: GetRendererID,                                    \
-            Module ## NAME :: GetRendererName,                                  \
-            Module ## NAME :: AllocRenderSystem,                                \
-            (PRIORITY),                                                         \
-        }                                                                       \
+#define LLGL_IMPLEMENT_RENDERER_MODULE(MODULE, NAME, ID, RENDERSYSTEM, PRIORITY)    \
+    LLGL_IMPLEMENT_RENDERER_MODULE_BASE(MODULE, NAME, ID, RENDERSYSTEM);            \
+    LLGL::StaticModules::RegisterStaticModuleWrapper g_StaticModule_ ## MODULE      \
+    {                                                                               \
+        LLGL::StaticModules::StaticModuleRecord                                     \
+        {                                                                           \
+            #MODULE,                                                                \
+            LLGL::Module ## MODULE::GetRendererID,                                  \
+            LLGL::Module ## MODULE::GetRendererName,                                \
+            LLGL::Module ## MODULE::AllocRenderSystem,                              \
+            (PRIORITY),                                                             \
+        }                                                                           \
     }
+
 
 namespace LLGL
 {

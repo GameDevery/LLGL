@@ -9,6 +9,28 @@
 #define LLGL_MODULE_INTERFACE_H
 
 
+// Define base macro used by LLGL_IMPLEMENT_RENDERER_MODULE() in StaticModuleInterface.h and DynamicModuleInterface.h.
+#define LLGL_IMPLEMENT_RENDERER_MODULE_BASE(MODULE, NAME, ID, RENDERSYSTEM) \
+    namespace LLGL                                                          \
+    {                                                                       \
+        namespace Module ## MODULE                                          \
+        {                                                                   \
+            int GetRendererID()                                             \
+            {                                                               \
+                return (ID);                                                \
+            }                                                               \
+            const char* GetRendererName()                                   \
+            {                                                               \
+                return (NAME);                                              \
+            }                                                               \
+            RenderSystem* AllocRenderSystem(                                \
+                const LLGL::RenderSystemDescriptor* renderSystemDesc)       \
+            {                                                               \
+                return new RENDERSYSTEM{ *renderSystemDesc };               \
+            }                                                               \
+        }                                                                   \
+    } // /namespace LLGL
+
 #if LLGL_BUILD_STATIC_LIB
 #   include "StaticModuleInterface.h"
 #else
