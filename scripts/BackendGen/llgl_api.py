@@ -17,13 +17,14 @@ def count_path_segments(path):
 
 
 class LLGLInterfaceInfo:
-    def __init__(self, name, sub_dir=None, has_inl=True, private_decls=None, private_defs=None, forward_decls=None, additional_include_files=[]):
-        self.name = name
+    def __init__(self, name, sub_dir=None, has_inl:bool=True, has_default_ctor:bool=False, private_decls=None, private_defs=None, forward_decls=None, additional_include_files=[]):
+        self.name = name # Interface name, e.g. "Buffer"
         self.sub_dir = sub_dir
-        self.has_inl = has_inl
+        self.has_inl:bool = has_inl # Does this interface have any Backend/<NAME>.inl files?
         self.private_decls = private_decls
         self.private_defs = private_defs
         self.forward_decls = forward_decls
+        self.has_default_ctor:bool = has_default_ctor # Should a default constructor be generated? Requires <NAME>Descriptor struct for this interface, e.g. "BufferDescriptor".
         self.additional_include_files = additional_include_files
     
     def get_dest_dir(self, root):
@@ -162,6 +163,7 @@ INTERFACES = [
     LLGLInterfaceInfo(
         "RenderSystem",
         private_decls=RENDER_SYSTEM_FIELDS,
+        has_default_ctor=True,
         additional_include_files=[
             '',
             '"{prefix}SwapChain.h"',

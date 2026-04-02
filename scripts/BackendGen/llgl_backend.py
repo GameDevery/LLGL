@@ -145,6 +145,7 @@ def write_interface_header(dest_path: str, prefix: str, interface: LLGLInterface
     base_file = os.path.join(dest_path, f"{prefix}{interface.name}")
     forward_decls = interface.forward_decls.format(prefix=prefix) if interface.forward_decls is not None else ""
     header_template = HEADER_TEMPLATE_INTERFACE if does_inl_header_exist(inl_base_path, interface.name) else HEADER_TEMPLATE_INTERFACE_MINIMAL
+    ctor_decl = CTOR_SIGNATURE_TEMPLATE.format(prefix=prefix, interface=interface.name)
     write_file(
         dest_path=f"{base_file}.h",
         content=HEADER_TEMPLATE.format(
@@ -154,6 +155,7 @@ def write_interface_header(dest_path: str, prefix: str, interface: LLGLInterface
             content=forward_decls + header_template.format(
                 prefix=prefix,
                 interface=interface.name,
+                ctor=(f"{ctor_decl};" if interface.has_default_ctor else f"/* {ctor_decl}; */"),
                 private_fields=(interface.private_decls.format(prefix=prefix) if interface.private_decls is not None else "// private fields ...")
             )
         )
@@ -175,6 +177,8 @@ def write_common_header(dest_path: str, prefix: str, name: str, content: str, in
 
 def write_interface_source(dest_path: str, prefix: str, interface: LLGLInterfaceInfo, signatures: list[LLGLFunctionSignature]):
     base_file = os.path.join(dest_path, f"{prefix}{interface.name}")
+
+    ctor_decl = CTOR_SIGNATURE_IMPL_TEMPLATE.format(prefix=prefix, interface=interface.name)
 
     functions_code = ""
     for sig in signatures:
@@ -205,6 +209,7 @@ def write_interface_source(dest_path: str, prefix: str, interface: LLGLInterface
             content=SOURCE_TEMPLATE_INTERFACE.format(
                 prefix=prefix,
                 interface=interface.name,
+                ctor=(f"{ctor_decl} {{ /* ... */ }}" if interface.has_default_ctor else f"/* {ctor_decl} {{ ... }} */"),
                 functions=functions_code
             )
         )

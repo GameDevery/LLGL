@@ -253,7 +253,7 @@ class UnorderedUniquePtrVector
                     container_[payload->index].payload() = *payload;
                 }
 
-                /* Remove last element in container; it's either input object or the one moved that object's location */
+                /* Remove last element in container; it's either input object or the one moved to that object's location */
                 container_.pop_back();
             }
         }

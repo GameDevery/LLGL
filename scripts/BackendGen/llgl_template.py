@@ -73,6 +73,10 @@ SOURCE_TEMPLATE_PRIVATE = """
 """
 
 
+CTOR_SIGNATURE_TEMPLATE = "{prefix}{interface}(const {interface}Descriptor& desc)"
+CTOR_SIGNATURE_IMPL_TEMPLATE = "{prefix}{interface}::{prefix}{interface}(const {interface}Descriptor& desc)"
+
+
 HEADER_TEMPLATE_INTERFACE = """class {prefix}{interface} final : public {interface}
 {{
 
@@ -82,7 +86,7 @@ HEADER_TEMPLATE_INTERFACE = """class {prefix}{interface} final : public {interfa
 
     public:
 
-        /* {prefix}{interface}(const {interface}Descriptor& desc); */
+        {ctor}
 
     private:
 
@@ -96,7 +100,7 @@ HEADER_TEMPLATE_INTERFACE_MINIMAL = """class {prefix}{interface} final : public 
 
     public:
 
-        /* {prefix}{interface}(const {interface}Descriptor& desc); */
+        {ctor}
 
     private:
 
@@ -105,7 +109,7 @@ HEADER_TEMPLATE_INTERFACE_MINIMAL = """class {prefix}{interface} final : public 
 }};"""
 
 
-SOURCE_TEMPLATE_INTERFACE="""/* {prefix}{interface}::{prefix}{interface}(const {interface}Descriptor& desc) {{ ... }} */{functions}"""
+SOURCE_TEMPLATE_INTERFACE="""{ctor}{functions}"""
 
 
 HEADER_TEMPLATE_COMMAND="""/*struct {prefix}CmdDraw
