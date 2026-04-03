@@ -17,7 +17,6 @@ type Surface interface {
 	GetNativeHandle(nativeHandle *any, nativeHandleSize uint) bool
 	GetContentSize() Extent2D
 	AdaptForVideoMode(resolution *Extent2D, fullscreen* bool) bool
-	ResetPixelFormat()
 	FindResidentDisplay() Display
 }
 
@@ -55,10 +54,6 @@ func (self surfaceImpl) AdaptForVideoMode(resolution *Extent2D, fullscreen *bool
 		*fullscreen = bool(nativeFullscreen)
 	}
 	return false
-}
-
-func (self surfaceImpl) ResetPixelFormat() {
-	C.llglResetSurfacePixelFormat(self.native)
 }
 
 func (self surfaceImpl) FindResidentDisplay() Display {

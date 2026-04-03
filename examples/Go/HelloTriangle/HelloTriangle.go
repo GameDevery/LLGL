@@ -10,11 +10,18 @@ package main
 import (
 	"log"
 	"unsafe"
+	"runtime"
 
 	"../../../wrapper/Go"
 )
 
 func main() {
+
+	// Lock the current goroutine to its current OS thread.
+	// This ensures all CGO calls happen on the same thread,
+	// which is mandatory for the LLGL wrapper.
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
 
 	// Load renderer and create swap chain
 	renderer := llgl.LoadRenderSystem("OpenGL")
@@ -107,7 +114,8 @@ func main() {
 	}
 
 	// Main loop
-	for llgl.ProcessSurfaceEvents() {
+	window := llgl.AsWindow(swapChain.GetSurface())
+	for llgl.ProcessSurfaceEvents() && !window.HasQuit() {
 		cmdBuffer.Begin()
 		cmdBuffer.BeginRenderPass(swapChain)
 
