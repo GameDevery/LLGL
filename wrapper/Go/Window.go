@@ -9,7 +9,10 @@ package llgl
 
 // #cgo CFLAGS: -I ../../include
 // #include <LLGL-C/LLGL.h>
+// #include <stdlib.h>
 import "C"
+
+import "unsafe"
 
 type Window interface {
 	Surface
@@ -25,8 +28,8 @@ type Window interface {
 	GetDesc(outWindowDesc *WindowDescriptor)
 	HasFocus() bool
 	HasQuit() bool
-	SetUserData(userData *any)
-	GetUserData() *any
+	SetUserData(userData unsafe.Pointer)
+	GetUserData() unsafe.Pointer
   //AddEventListener(eventListener *WindowEventListener) int
   //RemoveEventListener(eventListenerID int)
 	PostQuit()
@@ -63,7 +66,7 @@ func ReleaseWindow(window Window) {
 }*/
 
 func (self windowImpl) SetPosition(position Offset2D) {
-	nativePosition := C.LLGLOffset2D{
+	nativePosition := C.LLGLOffset2D {
 		x: C.int32_t(position.X),
 		y: C.int32_t(position.Y),
 	}
@@ -93,11 +96,22 @@ func (self windowImpl) GetSize(useClientArea bool) Extent2D {
 }
 
 func (self windowImpl) SetTitle(title string) {
-	//C.llglSetWindowTitle(self.native)
+	titleCstr := C.CString(title)
+	C.llglSetWindowTitleUTF8(self.native, titleCstr)
+	C.free(unsafe.Pointer(titleCstr))
 }
 
 func (self windowImpl) GetTitle() string {
-	return "" //todo
+	titleCstrLen := C.llglGetWindowTitleUTF8(self.native, 0, nil)
+	if titleCstrLen > 0 {
+		titleCstr := unsafeAllocArray[C.char](titleCstrLen)
+		C.llglGetWindowTitleUTF8(self.native, titleCstrLen, titleCstr)
+		title := C.GoString(titleCstr)
+		C.free(unsafe.Pointer(titleCstr))
+		return title
+	} else {
+		return ""
+	}
 }
 
 func (self windowImpl) Show(show bool) {
@@ -124,12 +138,12 @@ func (self windowImpl) HasQuit() bool {
 	return bool(C.llglHasWindowQuit(self.native))
 }
 
-func (self windowImpl) SetUserData(userData *any) {
-	//C.llglSetWindowUserData(self.native)
+func (self windowImpl) SetUserData(userData unsafe.Pointer) {
+	C.llglSetWindowUserData(self.native, userData)
 }
 
-func (self windowImpl) GetUserData() *any {
-	return nil //C.llglGetWindowUserData(self.native)
+func (self windowImpl) GetUserData() unsafe.Pointer {
+	return C.llglGetWindowUserData(self.native)
 }
 
 /*func (self windowImpl) AddEventListener(eventListener *WindowEventListener) int {
@@ -165,15 +179,27 @@ func (self windowImpl) PostWheelMotion(motion int) {
 }
 
 func (self windowImpl) PostLocalMotion(position Offset2D) {
-	//C.llglPostWindowLocalMotion(self.native)
+	nativePosition := C.LLGLOffset2D {
+		x: C.int32_t(position.X),
+		y: C.int32_t(position.Y),
+	}
+	C.llglPostWindowLocalMotion(self.native, &nativePosition)
 }
 
 func (self windowImpl) PostGlobalMotion(motion Offset2D) {
-	//C.llglPostWindowGlobalMotion(self.native)
+	nativeMotion := C.LLGLOffset2D {
+		x: C.int32_t(motion.X),
+		y: C.int32_t(motion.Y),
+	}
+	C.llglPostWindowGlobalMotion(self.native, &nativeMotion)
 }
 
 func (self windowImpl) PostResize(clientAreaSize Extent2D) {
-	//C.llglPostWindowResize(self.native)
+	nativeClientAreaSize := C.LLGLExtent2D {
+		width: C.uint32_t(clientAreaSize.Width),
+		height: C.uint32_t(clientAreaSize.Height),
+	}
+	C.llglPostWindowResize(self.native, &nativeClientAreaSize)
 }
 
 func (self windowImpl) PostUpdate() {

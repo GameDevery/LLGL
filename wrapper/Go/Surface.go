@@ -14,7 +14,7 @@ import "C"
 import "unsafe"
 
 type Surface interface {
-	GetNativeHandle(nativeHandle *any, nativeHandleSize uint) bool
+	GetNativeHandle(nativeHandle unsafe.Pointer, nativeHandleSize uintptr) bool
 	GetContentSize() Extent2D
 	AdaptForVideoMode(resolution *Extent2D, fullscreen* bool) bool
 	FindResidentDisplay() Display
@@ -28,8 +28,8 @@ func ProcessSurfaceEvents() bool {
 	return bool(C.llglProcessSurfaceEvents())
 }
 
-func (self surfaceImpl) GetNativeHandle(nativeHandle *any, nativeHandleSize uint) bool {
-	return bool(C.llglGetSurfaceNativeHandle(self.native, unsafe.Pointer(nativeHandle), C.size_t(nativeHandleSize)))
+func (self surfaceImpl) GetNativeHandle(nativeHandle unsafe.Pointer, nativeHandleSize uintptr) bool {
+	return bool(C.llglGetSurfaceNativeHandle(self.native, nativeHandle, C.size_t(nativeHandleSize)))
 }
 
 func (self surfaceImpl) GetContentSize() Extent2D {
