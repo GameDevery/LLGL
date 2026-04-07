@@ -122,6 +122,7 @@ void LoadFeatureSetCaps(id<MTLDevice> device, MTLFeatureSet fset, RenderingCapab
     /* Query supported hardware texture formats */
     caps.textureFormats = GetDefaultSupportedMTTextureFormats();
 
+    #ifndef LLGL_OS_IOS
     if (@available(macOS 10.13, *))
     {
         if ([device isDepth24Stencil8PixelFormatSupported])
@@ -130,6 +131,7 @@ void LoadFeatureSetCaps(id<MTLDevice> device, MTLFeatureSet fset, RenderingCapab
             g_formatCaps.hasD24S8UIntFormat = true;
         }
     }
+    #endif
 
     /* Specify supported shading languages */
     const int version = FeatureSetToVersion(fset);
