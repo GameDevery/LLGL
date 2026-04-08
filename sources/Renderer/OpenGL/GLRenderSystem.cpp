@@ -165,7 +165,7 @@ Buffer* GLRenderSystem::CreateBuffer(const BufferDescriptor& bufferDesc, const v
     if ((bufferDesc.bindFlags & BindFlags::IndexBuffer) != 0 && bufferDesc.format != Format::Undefined)
         bufferGL->SetIndexType(bufferDesc.format);
 
-    /* If this buffer could be used a 'samplerBuffer' in GLSL, create its proxy texture */
+    /* If this buffer could be used as 'samplerBuffer' in GLSL, create its proxy texture */
     if ((bufferDesc.bindFlags & (BindFlags::Sampled | BindFlags::Storage)) != 0 && bufferDesc.format != Format::Undefined)
     {
         GLenum internalFormat = GLTypes::Map(bufferDesc.format);
@@ -277,7 +277,7 @@ static GLbitfield ToGLMapBufferAccess(CPUAccess access)
 {
     switch (access)
     {
-        #if GL_ARB_buffer_storage
+        #if GL_ARB_map_buffer_range
         case CPUAccess::ReadOnly:       return GL_MAP_READ_BIT;
         case CPUAccess::WriteOnly:      return GL_MAP_WRITE_BIT;
         case CPUAccess::WriteDiscard:   return GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT;

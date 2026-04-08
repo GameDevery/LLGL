@@ -673,9 +673,9 @@ static void WriteDepthStencilValue(
     }
     else if (dstFormat == ImageFormat::DepthStencil && dataType == DataType::Float32)
     {
-        /* Read D32FloatS8X24UInt format: Copy 32-bit float and 8-bit unsigned integer */
-        dstBuffer.real32[idx*2]     = value.depth;
-        dstBuffer.uint32[idx*2 + 1] = (value.stencil & 0xFF) << 24;
+        /* Write D32FloatS8X24UInt format: Copy 32-bit float and 8-bit unsigned integer */
+        dstBuffer.real32[idx*2 + 1] = value.depth;
+        dstBuffer.uint32[idx*2]     = value.stencil & 0xFF;
     }
     else if (dstFormat == ImageFormat::Stencil && dataType == DataType::UInt8)
     {
