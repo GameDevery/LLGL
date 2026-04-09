@@ -7,7 +7,6 @@
 
 #include "MacOSCompatibility.h"
 #include "MacOSAppDelegate.h"
-#include "MacOSWindowDelegate.h"
 #include "MacOSWindow.h"
 #include "MacOSSubviewWindow.h"
 #include "MapKey.h"
@@ -68,27 +67,28 @@ static bool IsFilteredNSEventType(NSEventType type)
 
 bool Surface::ProcessEvents()
 {
-    DrainAutoreleasePool();
-
-    /* Process NSWindow events with latest event types */
-    while (NSEvent* event = [NSApp nextEventMatchingMask:g_EventMaskAny untilDate:nil inMode:NSDefaultRunLoopMode dequeue:YES])
+    @autoreleasepool
     {
-        if (NSWindow* wnd = [event window])
+        /* Process NSWindow events with latest event types */
+        while (NSEvent* event = [NSApp nextEventMatchingMask:g_EventMaskAny untilDate:nil inMode:NSDefaultRunLoopMode dequeue:YES])
         {
-            /* Process this event for the respective MacOSWindow if its delegate is of type MacOSWindowDelegate */
-            id<NSWindowDelegate> wndDelegate = [wnd delegate];
-            if ([wndDelegate isKindOfClass:[MacOSWindowDelegate class]])
+            if (NSWindow* wnd = [event window])
             {
-                MacOSWindow* platformWindow = [(MacOSWindowDelegate*)wndDelegate windowInstance];
-                platformWindow->ProcessEvent(event);
+                /* Process this event for the respective MacOSWindow if its delegate is of type MacOSWindowDelegate */
+                id<NSWindowDelegate> wndDelegate = [wnd delegate];
+                if ([wndDelegate isKindOfClass:[MacOSWindowDelegate class]])
+                {
+                    MacOSWindow* platformWindow = [(MacOSWindowDelegate*)wndDelegate windowInstance];
+                    platformWindow->ProcessEvent(event);
+                }
             }
+
+            /* Filter events we handle ourselves to avoid 'failure sounds' when keys are pressed */
+            if (IsFilteredNSEventType([event type]))
+                continue;
+
+            [NSApp sendEvent:event];
         }
-
-        /* Filter events we handle ourselves to avoid 'failure sounds' when keys are pressed */
-        if (IsFilteredNSEventType([event type]))
-            continue;
-
-        [NSApp sendEvent:event];
     }
 
     return true;
