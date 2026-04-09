@@ -534,7 +534,7 @@ TestResult TestbedContext::CreateBuffer(
         return TestResult::FailedMismatch;
     }
 
-    // Return buffer to output or delete right away if no longer neeeded
+    // Return buffer to output or delete right away if no longer needed
     if (output != nullptr)
         *output = buf;
     else
@@ -648,7 +648,7 @@ TestResult TestbedContext::CreateTexture(
         }
     }
 
-    // Return texture to output or delete right away if no longer neeeded
+    // Return texture to output or delete right away if no longer needed
     if (output != nullptr)
         *output = tex;
     else
@@ -773,7 +773,7 @@ TestResult TestbedContext::CreateRenderTarget(
         return TestResult::FailedMismatch;
     }
 
-    // Return render-target to output or delete right away if no longer neeeded
+    // Return render-target to output or delete right away if no longer needed
     if (output != nullptr)
         *output = target;
     else
@@ -1035,7 +1035,7 @@ bool TestbedContext::LoadShaders()
         ShaderMacro{ nullptr, nullptr }
     };
 
-    const ShaderMacro definesVerexFormat1[] =
+    const ShaderMacro definesVertexFormat1[] =
     {
         ShaderMacro{ "VERTEX_FORMAT", "1" },
         ShaderMacro{ nullptr, nullptr }
@@ -1081,7 +1081,7 @@ bool TestbedContext::LoadShaders()
         shaders[CSReadAfterWrite]   = LoadShaderFromFile("ReadAfterWrite.hlsl",        ShaderType::Compute,         "CSMain",  "cs_5_0");
         shaders[VSVertexFormat0]    = LoadShaderFromFile("VertexFormats.hlsl",         ShaderType::Vertex,          "VSMain",  "vs_5_0", nullptr, VertFmtLayout0);
         shaders[VSVertexFormat1]    = LoadShaderFromFile("VertexFormats.hlsl",         ShaderType::Vertex,          "VSMain",  "vs_5_0", nullptr, VertFmtLayout1);
-        shaders[VSVertexFormat2]    = LoadShaderFromFile("VertexFormats.hlsl",         ShaderType::Vertex,          "VSMain",  "vs_5_0", definesVerexFormat1, VertFmtLayout2);
+        shaders[VSVertexFormat2]    = LoadShaderFromFile("VertexFormats.hlsl",         ShaderType::Vertex,          "VSMain",  "vs_5_0", definesVertexFormat1, VertFmtLayout2);
         shaders[VSVertexFormat3]    = LoadShaderFromFile("VertexFormats.hlsl",         ShaderType::Vertex,          "VSMain",  "vs_5_0", nullptr, VertFmtLayout3);
         shaders[PSVertexFormat]     = LoadShaderFromFile("VertexFormats.hlsl",         ShaderType::Fragment,        "PSMain",  "ps_5_0");
         if (caps.features.hasMeshShaders)
@@ -1141,7 +1141,7 @@ bool TestbedContext::LoadShaders()
         shaders[PSCombinedSamplers] = LoadShaderFromFile("CombinedSamplers.330core.frag",      ShaderType::Fragment);
         shaders[VSVertexFormat0]    = LoadShaderFromFile("VertexFormats.330core.vert",         ShaderType::Vertex,          nullptr, nullptr, nullptr, VertFmtLayout0);
         shaders[VSVertexFormat1]    = LoadShaderFromFile("VertexFormats.330core.vert",         ShaderType::Vertex,          nullptr, nullptr, nullptr, VertFmtLayout1);
-        shaders[VSVertexFormat2]    = LoadShaderFromFile("VertexFormats.330core.vert",         ShaderType::Vertex,          nullptr, nullptr, definesVerexFormat1, VertFmtLayout2);
+        shaders[VSVertexFormat2]    = LoadShaderFromFile("VertexFormats.330core.vert",         ShaderType::Vertex,          nullptr, nullptr, definesVertexFormat1, VertFmtLayout2);
         shaders[VSVertexFormat3]    = LoadShaderFromFile("VertexFormats.330core.vert",         ShaderType::Vertex,          nullptr, nullptr, nullptr, VertFmtLayout3);
         shaders[PSVertexFormat]     = LoadShaderFromFile("VertexFormats.330core.frag",         ShaderType::Fragment);
     }
@@ -1173,7 +1173,7 @@ bool TestbedContext::LoadShaders()
         }*/
         shaders[VSVertexFormat0]    = LoadShaderFromFile("VertexFormats.metal",        ShaderType::Vertex,   "VSMain",  "1.1", nullptr, VertFmtLayout0);
         shaders[VSVertexFormat1]    = LoadShaderFromFile("VertexFormats.metal",        ShaderType::Vertex,   "VSMain",  "1.1", nullptr, VertFmtLayout1);
-        shaders[VSVertexFormat2]    = LoadShaderFromFile("VertexFormats.metal",        ShaderType::Vertex,   "VSMain",  "1.1", definesVerexFormat1, VertFmtLayout2);
+        shaders[VSVertexFormat2]    = LoadShaderFromFile("VertexFormats.metal",        ShaderType::Vertex,   "VSMain",  "1.1", definesVertexFormat1, VertFmtLayout2);
         shaders[VSVertexFormat3]    = LoadShaderFromFile("VertexFormats.metal",        ShaderType::Vertex,   "VSMain",  "1.1", nullptr, VertFmtLayout3);
         shaders[PSVertexFormat]     = LoadShaderFromFile("VertexFormats.metal",        ShaderType::Fragment, "PSMain",  "1.1");
     }

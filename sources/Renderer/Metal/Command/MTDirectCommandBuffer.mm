@@ -532,7 +532,7 @@ static void FillMTRenderPassDesc(MTLRenderPassDescriptor* renderPassDesc, const 
         renderPassDesc.colorAttachments[colorBufferIndex].loadAction = MTLLoadActionClear;
         renderPassDesc.colorAttachments[colorBufferIndex].clearColor = MTTypes::ToMTLClearColor(attachment.clearValue.color);
     }
-    
+
     if ((attachment.flags & ClearFlags::Depth) != 0)
     {
         /* Clear depth buffer */
