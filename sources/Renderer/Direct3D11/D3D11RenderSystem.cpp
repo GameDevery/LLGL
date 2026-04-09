@@ -84,15 +84,15 @@ D3D11RenderSystem::D3D11RenderSystem(const RenderSystemDescriptor& renderSystemD
     CreateStateManagerAndCommandQueue();
 
     /* Initialize MIP-map generator singleton */
-    D3D11MipGenerator::Get().InitializeDevice(device_);
-    D3D11BuiltinShaderFactory::Get().CreateBuiltinShaders(device_.Get());
+    sharedDeviceObjects_.mipGenerator.InitializeDevice(device_);
+    sharedDeviceObjects_.builtinShaderFactory.CreateBuiltinShaders(device_.Get());
 }
 
 D3D11RenderSystem::~D3D11RenderSystem()
 {
     /* Release resource of singletons first */
-    D3D11MipGenerator::Get().Clear();
-    D3D11BuiltinShaderFactory::Get().Clear();
+    sharedDeviceObjects_.mipGenerator.Clear();
+    sharedDeviceObjects_.builtinShaderFactory.Clear();
 }
 
 /* ----- Swap-chain ----- */
@@ -121,7 +121,7 @@ CommandBuffer* D3D11RenderSystem::CreateCommandBuffer(const CommandBufferDescrip
     if ((commandBufferDesc.flags & (CommandBufferFlags::ImmediateSubmit)) != 0)
     {
         /* Create command buffer with immediate context */
-        return commandBuffers_.emplace<D3D11PrimaryCommandBuffer>(device_.Get(), context_, stateMngr_, commandBufferDesc);
+        return commandBuffers_.emplace<D3D11PrimaryCommandBuffer>(*this, context_, stateMngr_, commandBufferDesc);
     }
     else if ((commandBufferDesc.flags & (CommandBufferFlags::Secondary)) != 0)
     {
@@ -142,7 +142,7 @@ CommandBuffer* D3D11RenderSystem::CreateCommandBuffer(const CommandBufferDescrip
         deferredStateMngrRefs_.push_back(deferredStateMngr.get());
 
         /* Create command buffer with deferred context and dedicated state manager */
-        return commandBuffers_.emplace<D3D11PrimaryCommandBuffer>(device_.Get(), deferredContext, std::move(deferredStateMngr), commandBufferDesc);
+        return commandBuffers_.emplace<D3D11PrimaryCommandBuffer>(*this, deferredContext, std::move(deferredStateMngr), commandBufferDesc);
     }
 }
 
@@ -239,7 +239,7 @@ Texture* D3D11RenderSystem::CreateTexture(const TextureDescriptor& textureDesc, 
 
     /* Generate MIP-maps if enabled */
     if (initialImage != nullptr && MustGenerateMipsOnCreate(textureDesc))
-        D3D11MipGenerator::Get().GenerateMips(context_.Get(), *textureD3D);
+        sharedDeviceObjects_.mipGenerator.GenerateMips(context_.Get(), *textureD3D);
 
     return textureD3D;
 }

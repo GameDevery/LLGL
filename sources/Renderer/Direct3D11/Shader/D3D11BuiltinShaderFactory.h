@@ -28,17 +28,16 @@ enum class D3D11BuiltinShader
     Num
 };
 
-// Builtin D3D11 shader factory singleton.
+// Builtin D3D11 shader factory.
 class D3D11BuiltinShaderFactory
 {
 
     public:
 
+        D3D11BuiltinShaderFactory() = default;
+
         D3D11BuiltinShaderFactory(const D3D11BuiltinShaderFactory&) = delete;
         D3D11BuiltinShaderFactory& operator = (const D3D11BuiltinShaderFactory&) = delete;
-
-        // Returns the instance of this singleton.
-        static D3D11BuiltinShaderFactory& Get();
 
         // Creates all builtin shaders with the specified D3D device.
         void CreateBuiltinShaders(ID3D11Device* device);
@@ -50,8 +49,6 @@ class D3D11BuiltinShaderFactory
         ID3D11ComputeShader* GetBulitinComputeShader(const D3D11BuiltinShader builtin) const;
 
     private:
-
-        D3D11BuiltinShaderFactory() = default;
 
         void LoadBuiltinShader(ID3D11Device*    device,
             const D3D11BuiltinShader            builtin,

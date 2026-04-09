@@ -74,12 +74,12 @@ D3D12RenderSystem::D3D12RenderSystem(const RenderSystemDescriptor& renderSystemD
 
     /* Create default pipeline layout and command signature pool */
     defaultPipelineLayout_.CreateRootSignature(device_.GetNative(), {});
-    cmdSignatureFactory_.CreateDefaultSignatures(device_.GetNative());
+    cmdSignatureFactory_.CreateDefaultSignatures(device_.GetNative(), deviceCaps_);
 
     stagingBufferPool_.InitializeDevice(device_.GetNative(), 0);
-    D3D12MipGenerator::Get().InitializeDevice(device_.GetNative());
-    D3D12BufferConstantsPool::Get().InitializeDevice(device_.GetNative(), *commandContext_, *commandQueue_, stagingBufferPool_);
-    D3D12BuiltinShaderFactory::Get().CreateBuiltinPSOs(device_.GetNative());
+    sharedDeviceObjects_.mipGenerator.InitializeDevice(device_.GetNative());
+    sharedDeviceObjects_.bufferConstantsPool.InitializeDevice(device_.GetNative(), *commandContext_, *commandQueue_, stagingBufferPool_);
+    sharedDeviceObjects_.builtinShaderFactory.CreateBuiltinPSOs(device_.GetNative());
 }
 
 D3D12RenderSystem::~D3D12RenderSystem()
@@ -96,9 +96,9 @@ D3D12RenderSystem::~D3D12RenderSystem()
     shaders_.clear();
 
     /* Clear resources of singletons */
-    D3D12MipGenerator::Get().Clear();
-    D3D12BufferConstantsPool::Get().Clear();
-    D3D12BuiltinShaderFactory::Get().Clear();
+    sharedDeviceObjects_.mipGenerator.Clear();
+    sharedDeviceObjects_.bufferConstantsPool.Clear();
+    sharedDeviceObjects_.builtinShaderFactory.Clear();
 }
 
 /* ----- Swap-chain ----- */
@@ -212,7 +212,7 @@ Texture* D3D12RenderSystem::CreateTexture(const TextureDescriptor& textureDesc, 
 
         /* Generate MIP-maps if enabled */
         if (MustGenerateMipsOnCreate(textureDesc))
-            D3D12MipGenerator::Get().GenerateMips(*commandContext_, *textureD3D, textureD3D->GetWholeSubresource());
+            sharedDeviceObjects_.mipGenerator.GenerateMips(*commandContext_, *textureD3D, textureD3D->GetWholeSubresource());
     }
 
     return textureD3D;
