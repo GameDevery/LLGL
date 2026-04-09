@@ -1954,7 +1954,8 @@ bool TestbedContext::QueryResultsWithTimeout(
     void*               data,
     std::size_t         dataSize)
 {
-    const std::uint64_t ticksUntilTimeout = Timer::Frequency() / 2; // 0.5 seconds until timeout
+    // 2.0 seconds until timeout - virtualized systems in CIS might need longer than just a second
+    const std::uint64_t ticksUntilTimeout = Timer::Frequency() * 2;
     const std::uint64_t startTick = Timer::Tick();
 
     while (!cmdQueue->QueryResult(queryHeap, firstQuery, numQueries, data, dataSize))
