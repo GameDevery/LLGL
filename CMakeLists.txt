@@ -87,7 +87,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # XCODE_SCHEME_WORKING_DIRECTORY (used per target) requires CMake 3.17.5
 if(APPLE AND ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.17.5")
-    # Once Xcode schemes are generated for example, we also have to enable them globally or the main projects will disappear
+    # Once Xcode schemes are generated, we also have to enable them globally or the main projects will disappear
     set(CMAKE_XCODE_GENERATE_SCHEME TRUE)
 endif()
 
