@@ -343,7 +343,8 @@ namespace LLGL
         BrowserRefresh,
         BrowserStop,
         BrowserSearch,
-        BrowserFavorits,
+        BrowserFavorites,
+        BrowserFavorits   = BrowserFavorites,
         BrowserHome,
         VolumeMute,
         VolumeDown,
@@ -1336,6 +1337,8 @@ namespace LLGL
         public int BufferMappings { get; set; }           = 0;
         public int TextureWrites { get; set; }            = 0;
         public int TextureReads { get; set; }             = 0;
+        public int CommandBufferSubmissions { get; set; } = 0;
+        [Obsolete("Identifier `commandBufferSubmittions` is deprecated since 0.05b; Use `commandBufferSubmissions` instead!")]
         public int CommandBufferSubmittions { get; set; } = 0;
         public int FenceSubmissions { get; set; }         = 0;
 
@@ -1355,7 +1358,7 @@ namespace LLGL
                 BufferMappings           = value.bufferMappings;
                 TextureWrites            = value.textureWrites;
                 TextureReads             = value.textureReads;
-                CommandBufferSubmittions = value.commandBufferSubmittions;
+                CommandBufferSubmissions = value.commandBufferSubmissions;
                 FenceSubmissions         = value.fenceSubmissions;
             }
         }
@@ -3779,7 +3782,9 @@ namespace LLGL
             public int bufferMappings;           /* = 0 */
             public int textureWrites;            /* = 0 */
             public int textureReads;             /* = 0 */
-            public int commandBufferSubmittions; /* = 0 */
+            public int commandBufferSubmissions; /* = 0 */
+            [Obsolete("Identifier `commandBufferSubmittions` is deprecated since 0.05b; Use `commandBufferSubmissions` instead!")]
+            public int commandBufferSubmittions;
             public int fenceSubmissions;         /* = 0 */
         }
 
