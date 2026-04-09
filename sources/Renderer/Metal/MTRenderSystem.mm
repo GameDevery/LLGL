@@ -358,6 +358,7 @@ id<MTLDevice> MTRenderSystem::CreateMetalDevice(long renderSystemFlags)
 
     /* Try to create default device first */
     outDevice = MTLCreateSystemDefaultDevice();
+    #ifdef LLGL_OS_MACOS
     if (outDevice == nil)
     {
         /* Otherwise, try to find headless device */
@@ -372,6 +373,7 @@ id<MTLDevice> MTRenderSystem::CreateMetalDevice(long renderSystemFlags)
         }
         [allDevices release];
     }
+    #endif // /LLGL_OS_MACOS
 
     return outDevice;
 }
