@@ -22,17 +22,12 @@ out vec4 outColor;
 
 uniform sampler2D colorMaps[2];
 
-vec4 SampleTex(int index, vec2 texCoord)
-{
-    return texture(colorMaps[index], texCoord);
-}
-
 void main()
 {
     vec3 normal = normalize(vNormal);
     float NdotL = clamp(dot(lightVec, normal), 0.0, 1.0);
     float shading = mix(0.2, 1.0, NdotL);
-    vec4 albedo = SampleTex(0, vTexCoord);
-    vec4 detail = vec4(SampleTex(1, vTexCoord * 0.25).rgb - vec3(0.5), 0.0);
+    vec4 albedo = texture(colorMaps[0], vTexCoord);
+    vec4 detail = vec4(texture(colorMaps[1], vTexCoord * 0.25).rgb - vec3(0.5), 0.0);
     outColor = solidColor * (albedo + detail) * vec4(vec3(shading), 1.0);
 }
